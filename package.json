@@ -1,0 +1,33 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "bin": {
+    "gendiff": "bin/gendiff.js"
+  },
+  "description": "Compares two configuration files and shows a difference.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "npx jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fishtriangle/backend-project-lvl2.git"
+  },
+  "author": "Fish-triangle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fishtriangle/backend-project-lvl2/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/fishtriangle/backend-project-lvl2#readme",
+  "dependencies": {
+    "commander": "^9.2.0",
+    "debug": "^4.3.4",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
