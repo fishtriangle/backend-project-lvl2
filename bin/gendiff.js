@@ -1,12 +1,5 @@
 #!/usr/bin/env node
 
-import { program } from 'commander';
-import index from '../src';
+import cli from '../src/cli.js';
 
-program
-  .description('Compares two configuration files and shows a difference.')
-  .version('0.0.1');
-
-program.parse();
-
-export default index;
+cli();
