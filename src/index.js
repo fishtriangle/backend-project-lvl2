@@ -11,41 +11,34 @@ const createDiffs = (primaryObject, secondaryObject) => {
   const objectsKeys = _.uniq(Object.keys(primaryObject).concat(Object.keys(secondaryObject)))
     .sort();
 
-  const diffsArray = objectsKeys.map((key) => {
-    if (_.isEqual(primaryObject[key], secondaryObject[key])) {
-      return [`  ${key}: ${primaryObject[key]}`];
-    }
-
-    if (!(_.has(secondaryObject, key))) {
-      return [`- ${key}: ${primaryObject[key]}`];
-    }
-
-    if (!(_.has(primaryObject, key))) {
-      return [`+ ${key}: ${secondaryObject[key]}`];
-    }
-
-    return [
-      `- ${key}: ${primaryObject[key]}`,
-      `+ ${key}: ${secondaryObject[key]}`,
-    ];
-  });
+  const diffsArray = objectsKeys.map((key) => ({
+    key,
+    primaryProp: primaryObject[key],
+    secondaryProp: secondaryObject[key],
+  }));
 
   return diffsArray;
-};
-
-const logDiffs = (diffsArray) => {
-  diffsArray
-    .map((sameIndexDiffArray) => sameIndexDiffArray
-      .map((diffItem) => {
-        console.log(diffItem);
-        return diffItem;
-      }));
 };
 
 const gendiff = (primaryObject, secondaryObject) => {
   console.log('{');
   console.group();
-  logDiffs(createDiffs(primaryObject, secondaryObject));
+  createDiffs(primaryObject, secondaryObject)
+    .map(({key, primaryProp, secondaryProp}) => {
+      if (_.isEqual(primaryProp, secondaryProp)) {
+        return console.log(`  ${key}: ${primaryProp}`);
+      }
+
+      if (!secondaryProp) {
+        return console.log(`- ${key}: ${primaryProp}`);
+      }
+
+      if (!primaryProp) {
+        return console.log(`+ ${key}: ${secondaryProp}`);
+      }
+
+      return console.log(`- ${key}: ${primaryProp}\n+ ${key}: ${secondaryProp}`);
+    });
   console.groupEnd();
   console.log('}');
 };
