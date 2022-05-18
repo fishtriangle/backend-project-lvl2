@@ -24,7 +24,7 @@ const gendiff = (primaryObject, secondaryObject) => {
   console.log('{');
   console.group();
   createDiffs(primaryObject, secondaryObject)
-    .map(({key, primaryProp, secondaryProp}) => {
+    .map(({ key, primaryProp, secondaryProp }) => {
       if (_.isEqual(primaryProp, secondaryProp)) {
         return console.log(`  ${key}: ${primaryProp}`);
       }
