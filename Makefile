@@ -1,7 +1,10 @@
 gendiff:
 	node bin/gendiff.js
 
-install:
+install: install-deps
+	npx simple-git-hooks
+
+install-deps:
 	npm ci
 
 test:
