@@ -30,23 +30,18 @@ const diffsLogger = (primaryObject, secondaryObject) => {
   console.group();
   const diffLog = createDiffs(primaryObject, secondaryObject)
     .map(({ key, props }) => {
+      let diffResultString;
       if (_.isEqual(car(props), cdr(props))) {
-        console.log(`  ${key}: ${car(props)}`);
-        return (`  ${key}: ${car(props)}`);
+        diffResultString = `  ${key}: ${car(props)}`;
+      } else if (!cdr(props)) {
+        diffResultString = `- ${key}: ${car(props)}`;
+      } else if (!car(props)) {
+        diffResultString = `+ ${key}: ${cdr(props)}`;
+      } else {
+        diffResultString = `- ${key}: ${car(props)}\n+ ${key}: ${cdr(props)}`;
       }
-
-      if (!cdr(props)) {
-        console.log(`- ${key}: ${car(props)}`);
-        return (`- ${key}: ${car(props)}`);
-      }
-
-      if (!car(props)) {
-        console.log(`+ ${key}: ${cdr(props)}`);
-        return (`+ ${key}: ${cdr(props)}`);
-      }
-
-      console.log(`- ${key}: ${car(props)}\n+ ${key}: ${cdr(props)}`);
-      return (`- ${key}: ${car(props)}\n+ ${key}: ${cdr(props)}`);
+      console.log(diffResultString);
+      return diffResultString;
     });
   console.groupEnd();
   console.log('}');
