@@ -1,50 +1,60 @@
 import { readFileSync } from 'node:fs';
 import _ from 'lodash';
 import { resolve } from 'node:path';
+import { car, cdr, cons } from 'hexlet-pairs';
 
-const getObject = (path) => {
+export const getObject = (path) => {
   const absolutePath = resolve(path);
   return JSON.parse(readFileSync(absolutePath, 'utf8'));
 };
 
-const createDiffs = (primaryObject, secondaryObject) => {
-  const objectsKeys = _.uniq(Object.keys(primaryObject).concat(Object.keys(secondaryObject)))
-    .sort();
+export const createDiffs = (primaryObject, secondaryObject) => {
+  const objectsPair = cons(_.cloneDeep(primaryObject), _.cloneDeep(secondaryObject));
 
-  const diffsArray = objectsKeys.map((key) => ({
+  const getKeys = (pair) => {
+    const primaryKeys = Object.keys(car(pair));
+    const secondaryKeys = Object.keys(cdr(pair));
+    return _.uniq(primaryKeys.concat(secondaryKeys)).sort();
+  };
+
+  const objectsKeys = getKeys(objectsPair);
+
+  return objectsKeys.map((key) => ({
     key,
-    primaryProp: primaryObject[key],
-    secondaryProp: secondaryObject[key],
+    props: cons(car(objectsPair)[key], cdr(objectsPair)[key]),
   }));
-
-  return diffsArray;
 };
 
-const gendiff = (primaryObject, secondaryObject) => {
+const diffsLogger = (primaryObject, secondaryObject) => {
   console.log('{');
   console.group();
-  createDiffs(primaryObject, secondaryObject)
-    .map(({ key, primaryProp, secondaryProp }) => {
-      if (_.isEqual(primaryProp, secondaryProp)) {
-        return console.log(`  ${key}: ${primaryProp}`);
+  const diffLog = createDiffs(primaryObject, secondaryObject)
+    .map(({ key, props }) => {
+      if (_.isEqual(car(props), cdr(props))) {
+        console.log(`  ${key}: ${car(props)}`);
+        return (`  ${key}: ${car(props)}`);
       }
 
-      if (!secondaryProp) {
-        return console.log(`- ${key}: ${primaryProp}`);
+      if (!cdr(props)) {
+        console.log(`- ${key}: ${car(props)}`);
+        return (`- ${key}: ${car(props)}`);
       }
 
-      if (!primaryProp) {
-        return console.log(`+ ${key}: ${secondaryProp}`);
+      if (!car(props)) {
+        console.log(`+ ${key}: ${cdr(props)}`);
+        return (`+ ${key}: ${cdr(props)}`);
       }
 
-      return console.log(`- ${key}: ${primaryProp}\n+ ${key}: ${secondaryProp}`);
+      console.log(`- ${key}: ${car(props)}\n+ ${key}: ${cdr(props)}`);
+      return (`- ${key}: ${car(props)}\n+ ${key}: ${cdr(props)}`);
     });
   console.groupEnd();
   console.log('}');
+  return diffLog;
 };
 
-export const gendiffFromPaths = (primaryPath, secondaryPath) => {
-  gendiff(getObject(primaryPath), getObject(secondaryPath));
+export const logDiffsFromPaths = (primaryPath, secondaryPath) => {
+  diffsLogger(getObject(primaryPath), getObject(secondaryPath));
 };
 
-export default gendiff;
+export default diffsLogger;

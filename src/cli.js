@@ -1,5 +1,5 @@
 import { program } from 'commander';
-import { gendiffFromPaths } from './index.js';
+import { logDiffsFromPaths } from './index.js';
 
 export default function cli() {
   program
@@ -8,7 +8,7 @@ export default function cli() {
     .arguments('<filepath1> <filepath2>')
     .option('-f, --format <type>', 'output format')
     .action((primaryFilepath, secondaryFilepath) => {
-      gendiffFromPaths(primaryFilepath, secondaryFilepath);
+      logDiffsFromPaths(primaryFilepath, secondaryFilepath);
     });
 
   program.parse();
