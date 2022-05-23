@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { test, expect } from '@jest/globals';
-import diffsLogger, { getObject } from '../src/index.js';
+import { test, expect, describe } from '@jest/globals';
+import printLog, { getObjectFromFile } from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,14 +36,27 @@ const primaryNThirdDiffs = [
 //
 // })
 
-test('create diffs from files', () => {
-  const testingPrimaryObject = getObject(getFixturePath('primaryObject.json'));
-  const testingSecondaryObject = getObject(getFixturePath('secondaryObject.json'));
-  const testingThirdObject = getObject(getFixturePath('thirdObject.json'));
-  expect(testingPrimaryObject).toEqual(primaryObject);
-  expect(testingSecondaryObject).toEqual(secondaryObject);
-  expect(testingThirdObject).toEqual(thirdObject);
+describe('create diffs from files', () => {
+  test('get object from JSON', () => {
+    const testingPrimaryObject = getObjectFromFile(getFixturePath('primaryObject.json'));
+    const testingSecondaryObject = getObjectFromFile(getFixturePath('secondaryObject.json'));
+    const testingThirdObject = getObjectFromFile(getFixturePath('thirdObject.json'));
+    expect(testingPrimaryObject).toEqual(primaryObject);
+    expect(testingSecondaryObject).toEqual(secondaryObject);
+    expect(testingThirdObject).toEqual(thirdObject);
+  });
 
-  expect(diffsLogger(testingPrimaryObject, testingSecondaryObject)).toEqual(primaryNSecondaryDiffs);
-  expect(diffsLogger(testingPrimaryObject, testingThirdObject)).toEqual(primaryNThirdDiffs);
+  test('get object from YAML', () => {
+    const testingPrimaryObject = getObjectFromFile(getFixturePath('primaryObject.yml'));
+    const testingSecondaryObject = getObjectFromFile(getFixturePath('secondaryObject.yml'));
+    const testingThirdObject = getObjectFromFile(getFixturePath('thirdObject.yml'));
+    expect(testingPrimaryObject).toEqual(primaryObject);
+    expect(testingSecondaryObject).toEqual(secondaryObject);
+    expect(testingThirdObject).toEqual(thirdObject);
+  });
+
+  test('create diffs from objects', () => {
+    expect(printLog(primaryObject, secondaryObject)).toEqual(primaryNSecondaryDiffs);
+    expect(printLog(primaryObject, thirdObject)).toEqual(primaryNThirdDiffs);
+  });
 });

@@ -27,6 +27,7 @@
     "commander": "^9.2.0",
     "debug": "^4.3.4",
     "hexlet-pairs": "^1.0.8",
+    "js-yaml": "^4.1.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

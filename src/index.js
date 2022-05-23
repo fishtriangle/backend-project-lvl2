@@ -1,11 +1,20 @@
 import { readFileSync } from 'node:fs';
 import _ from 'lodash';
-import { resolve } from 'node:path';
+import { resolve, extname } from 'node:path';
 import { car, cdr, cons } from 'hexlet-pairs';
+import { parseJSON, parseYAML } from './parsers.js';
 
-export const getObject = (path) => {
+export const getObjectFromFile = (path) => {
   const absolutePath = resolve(path);
-  return JSON.parse(readFileSync(absolutePath, 'utf8'));
+  const format = extname(absolutePath);
+  const data = readFileSync(absolutePath, 'utf8');
+  if (format === '.json') {
+    return parseJSON(data);
+  }
+  if (format === '.yml' || format === '.yaml') {
+    return parseYAML(data);
+  }
+  throw new Error('File type is not supported!');
 };
 
 export const createDiffs = (primaryObject, secondaryObject) => {
@@ -25,7 +34,7 @@ export const createDiffs = (primaryObject, secondaryObject) => {
   }));
 };
 
-const diffsLogger = (primaryObject, secondaryObject) => {
+const printLog = (primaryObject, secondaryObject) => {
   console.log('{');
   console.group();
   const diffLog = createDiffs(primaryObject, secondaryObject)
@@ -49,7 +58,7 @@ const diffsLogger = (primaryObject, secondaryObject) => {
 };
 
 export const logDiffsFromPaths = (primaryPath, secondaryPath) => {
-  diffsLogger(getObject(primaryPath), getObject(secondaryPath));
+  printLog(getObjectFromFile(primaryPath), getObjectFromFile(secondaryPath));
 };
 
-export default diffsLogger;
+export default printLog;
