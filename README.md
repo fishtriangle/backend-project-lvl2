@@ -15,3 +15,6 @@
 
 ### Example of run with YAML-files:
 [![asciicast](https://asciinema.org/a/sU9Qk0N79qr4O6vqQkmS1Rkv2.svg)](https://asciinema.org/a/sU9Qk0N79qr4O6vqQkmS1Rkv2)
+
+### Example of run with node structures:
+[![asciicast](https://asciinema.org/a/0Bc1IiXUpRRUqS2vIHuSWv1hs.svg)](https://asciinema.org/a/0Bc1IiXUpRRUqS2vIHuSWv1hs)

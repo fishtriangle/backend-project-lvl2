@@ -7,8 +7,12 @@ export default function cli() {
     .version('0.0.1')
     .arguments('<filepath1> <filepath2>')
     .option('-f, --format <type>', 'output format')
-    .action((primaryFilepath, secondaryFilepath) => {
-      logDiffsFromPaths(primaryFilepath, secondaryFilepath);
+    .action((primaryFilepath, secondaryFilepath, options) => {
+      let logFormat = 'stylish';
+      if (options.format === 'standard') {
+        logFormat = 'standard';
+      }
+      logDiffsFromPaths(primaryFilepath, secondaryFilepath, logFormat);
     });
 
   program.parse();

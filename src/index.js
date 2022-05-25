@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import _ from 'lodash';
-import { resolve, extname } from 'node:path';
-import { car, cdr, cons } from 'hexlet-pairs';
+import { extname, resolve } from 'node:path';
 import { parseJSON, parseYAML } from './parsers.js';
+import { standardTree, stylish } from './formatters.js';
 
 export const getObjectFromFile = (path) => {
   const absolutePath = resolve(path);
@@ -17,48 +17,67 @@ export const getObjectFromFile = (path) => {
   throw new Error('File type is not supported!');
 };
 
-export const createDiffs = (primaryObject, secondaryObject) => {
-  const objectsPair = cons(_.cloneDeep(primaryObject), _.cloneDeep(secondaryObject));
+export const createDiffs = (primaryObject, secondaryObject = primaryObject) => {
+  const primaryKeys = Object.keys(primaryObject);
+  const secondaryKeys = Object.keys(secondaryObject);
 
-  const getKeys = (pair) => {
-    const primaryKeys = Object.keys(car(pair));
-    const secondaryKeys = Object.keys(cdr(pair));
-    return _.uniq(primaryKeys.concat(secondaryKeys)).sort();
-  };
-
-  const objectsKeys = getKeys(objectsPair);
-
-  return objectsKeys.map((key) => ({
-    key,
-    props: cons(car(objectsPair)[key], cdr(objectsPair)[key]),
-  }));
-};
-
-const printLog = (primaryObject, secondaryObject) => {
-  console.log('{');
-  console.group();
-  const diffLog = createDiffs(primaryObject, secondaryObject)
-    .map(({ key, props }) => {
-      let diffResultString;
-      if (_.isEqual(car(props), cdr(props))) {
-        diffResultString = `  ${key}: ${car(props)}`;
-      } else if (!cdr(props)) {
-        diffResultString = `- ${key}: ${car(props)}`;
-      } else if (!car(props)) {
-        diffResultString = `+ ${key}: ${cdr(props)}`;
-      } else {
-        diffResultString = `- ${key}: ${car(props)}\n+ ${key}: ${cdr(props)}`;
+  return _.uniq(primaryKeys.concat(secondaryKeys))
+    .sort()
+    .flatMap((key) => {
+      const primaryValue = primaryObject[key];
+      const secondaryValue = secondaryObject[key];
+      if (_.isObject(primaryValue) && _.isObject(secondaryValue)) {
+        return {
+          key: `  ${key}`,
+          value: createDiffs(primaryValue, secondaryValue),
+        };
       }
-      console.log(diffResultString);
-      return diffResultString;
+
+      if (_.isEqual(primaryValue, secondaryValue)) {
+        return {
+          key: `  ${key}`,
+          value: primaryValue,
+        };
+      }
+
+      if (!(_.has(secondaryObject, key))) {
+        return {
+          key: `- ${key}`,
+          value: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
+        };
+      }
+
+      if (!(_.has(primaryObject, key))) {
+        return {
+          key: `+ ${key}`,
+          value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
+        };
+      }
+
+      return [
+        {
+          key: `- ${key}`,
+          value: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
+        },
+        {
+          key: `+ ${key}`,
+          value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
+        },
+      ];
     });
-  console.groupEnd();
-  console.log('}');
-  return diffLog;
 };
 
-export const logDiffsFromPaths = (primaryPath, secondaryPath) => {
-  printLog(getObjectFromFile(primaryPath), getObjectFromFile(secondaryPath));
+const gendiff = (primaryObject, secondaryObject, logFormat = 'standard') => {
+  if (logFormat === 'stylish') {
+    return stylish(createDiffs(primaryObject, secondaryObject));
+  }
+  return standardTree(createDiffs(primaryObject, secondaryObject));
 };
 
-export default printLog;
+export const logDiffsFromPaths = (primaryPath, secondaryPath, logFormat) => {
+  const primaryObject = getObjectFromFile(primaryPath);
+  const secondaryObject = getObjectFromFile(secondaryPath);
+  console.log(gendiff(primaryObject, secondaryObject, logFormat));
+};
+
+export default gendiff;
