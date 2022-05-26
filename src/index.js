@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import _ from 'lodash';
 import { extname, resolve } from 'node:path';
 import { parseJSON, parseYAML } from './parsers.js';
-import { standardTree, stylish } from './formatters.js';
+import standardTree from './formatters/standardTree.js';
+import stylish from './formatters/stylish.js';
+import plain from './formatters/plain.js';
 
 export const getObjectFromFile = (path) => {
   const absolutePath = resolve(path);
@@ -28,50 +30,63 @@ export const createDiffs = (primaryObject, secondaryObject = primaryObject) => {
       const secondaryValue = secondaryObject[key];
       if (_.isObject(primaryValue) && _.isObject(secondaryValue)) {
         return {
-          key: `  ${key}`,
+          key,
+          keyPrefix: ' ',
           value: createDiffs(primaryValue, secondaryValue),
         };
       }
 
       if (_.isEqual(primaryValue, secondaryValue)) {
         return {
-          key: `  ${key}`,
+          key,
+          keyPrefix: ' ',
           value: primaryValue,
         };
       }
 
       if (!(_.has(secondaryObject, key))) {
         return {
-          key: `- ${key}`,
+          key,
+          keyPrefix: '-',
           value: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
+          action: 'remove',
         };
       }
 
       if (!(_.has(primaryObject, key))) {
         return {
-          key: `+ ${key}`,
+          key,
+          keyPrefix: '+',
           value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
+          action: 'add',
         };
       }
 
       return [
         {
-          key: `- ${key}`,
+          key,
+          keyPrefix: '-',
           value: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
         },
         {
-          key: `+ ${key}`,
+          key,
+          keyPrefix: '+',
           value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
+          action: 'update',
         },
       ];
     });
 };
 
 const gendiff = (primaryObject, secondaryObject, logFormat = 'standard') => {
+  const diffs = createDiffs(primaryObject, secondaryObject);
   if (logFormat === 'stylish') {
-    return stylish(createDiffs(primaryObject, secondaryObject));
+    return stylish(diffs);
   }
-  return standardTree(createDiffs(primaryObject, secondaryObject));
+  if (logFormat === 'plain') {
+    return plain(diffs);
+  }
+  return standardTree(diffs);
 };
 
 export const logDiffsFromPaths = (primaryPath, secondaryPath, logFormat) => {

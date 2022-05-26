@@ -18,3 +18,6 @@
 
 ### Example of run with node structures:
 [![asciicast](https://asciinema.org/a/0Bc1IiXUpRRUqS2vIHuSWv1hs.svg)](https://asciinema.org/a/0Bc1IiXUpRRUqS2vIHuSWv1hs)
+
+### Example of run with plain output:
+[![asciicast](https://asciinema.org/a/YUU11kHMogwMKY6oNKEhKRi0m.svg)](https://asciinema.org/a/YUU11kHMogwMKY6oNKEhKRi0m)
