@@ -66,20 +66,20 @@ export const createDiffs = (primaryData, secondaryData = primaryData) => {
     });
 };
 
-const gendiff = (primaryPath, secondaryPath, logFormat = 'standard') => {
+const gendiff = (primaryPath, secondaryPath, logFormat = 'stylish') => {
   const primaryObject = makeObjectFromFile(primaryPath);
   const secondaryObject = makeObjectFromFile(secondaryPath);
   const diffs = createDiffs(getData(primaryObject), getData(secondaryObject));
-  if (logFormat === 'stylish') {
-    return stylish(diffs);
+  switch (logFormat) {
+    case 'standard':
+      return standardTree(diffs);
+    case 'plain':
+      return plain(diffs);
+    case 'json':
+      return jsonFormatter(diffs, primaryObject, secondaryObject);
+    default:
+      return stylish(diffs);
   }
-  if (logFormat === 'plain') {
-    return plain(diffs);
-  }
-  if (logFormat === 'json') {
-    return jsonFormatter(diffs, primaryObject, secondaryObject);
-  }
-  return standardTree(diffs);
 };
 
 export const logDiffsFromPaths = (primaryPath, secondaryPath, logFormat) => {

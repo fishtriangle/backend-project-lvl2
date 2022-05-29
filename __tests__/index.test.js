@@ -30,11 +30,11 @@ describe('create diffs from files', () => {
   });
 
   test('create diffs from objects in standard style', () => {
-    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'))).toEqual(firstNSecondDiffsStandard);
+    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'), 'standard')).toEqual(firstNSecondDiffsStandard);
   });
 
   test('create diffs from objects in stylish', () => {
-    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'), 'stylish')).toEqual(firstNSecondDiffsStylish);
+    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'))).toEqual(firstNSecondDiffsStylish);
   });
 
   test('create diffs from objects in plain style', () => {
