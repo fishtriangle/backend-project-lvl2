@@ -25,12 +25,6 @@ const valueFormatter = (data) => {
 };
 
 const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
-  const counters = {
-    addCount: 0,
-    removeCount: 0,
-    updateCount: 0,
-    updateFromValue: '',
-  };
   const objectsInfo = makeObjectsInfo(primaryObject, secondaryObject);
 
   const iter = (currentDiff, path = '') => {
@@ -38,12 +32,16 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
       return '';
     }
 
-    const messages = currentDiff.flatMap(({ key, value, action }) => {
+    const messages = currentDiff.flatMap(({
+      key,
+      value,
+      action,
+      oldValue,
+    }) => {
       const currentPath = [...path, key];
       const currentValue = valueFormatter(value);
 
       if (action === 'add') {
-        counters.addCount += 1;
         return {
           actionId: action,
           node: currentPath.join('.'),
@@ -51,21 +49,16 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
         };
       }
       if (action === 'remove') {
-        counters.removeCount += 1;
         return {
           actionId: action,
           node: currentPath.join('.'),
         };
       }
-      if (action === 'updateFrom') {
-        counters.updateFromValue = valueFormatter(value);
-      }
-      if (action === 'updateTo') {
-        counters.updateCount += 1;
+      if (action === 'update') {
         return {
           actionId: action,
           node: currentPath.join('.'),
-          oldArgument: counters.updateFromValue,
+          oldArgument: oldValue,
           newArgument: currentValue,
         };
       }
@@ -83,11 +76,6 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
       objectsInfo,
       {
         diffMessages,
-        statistics: {
-          addCount: counters.addCount,
-          removeCount: counters.removeCount,
-          updateCount: counters.updateCount,
-        },
       },
     ],
   );

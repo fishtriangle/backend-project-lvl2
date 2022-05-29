@@ -12,13 +12,16 @@ const valueFormatter = (data) => {
 
 const plain = (diffArray) => {
   const iter = (currentDiff, path = '') => {
-    const valueCounter = {};
-
     if (!_.isArray(currentDiff)) {
       return '';
     }
 
-    const lines = currentDiff.flatMap(({ key, value, action }) => {
+    const lines = currentDiff.flatMap(({
+      key,
+      value,
+      action,
+      oldValue,
+    }) => {
       const currentPath = [...path, key];
 
       const currentValue = valueFormatter(value);
@@ -29,12 +32,9 @@ const plain = (diffArray) => {
       if (action === 'remove') {
         return `Property '${currentPath.join('.')}' was removed`;
       }
-      if (action === 'updateFrom') {
-        valueCounter.updateFromValue = valueFormatter(value);
-      }
-      if (action === 'updateTo') {
+      if (action === 'update') {
         return (
-          `Property '${currentPath.join('.')}' was updated. From ${valueCounter.updateFromValue} to ${currentValue}`
+          `Property '${currentPath.join('.')}' was updated. From ${valueFormatter(oldValue)} to ${currentValue}`
         );
       }
 

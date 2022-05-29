@@ -47,6 +47,5 @@ describe('create diffs from files', () => {
     const [objectsInfo, messages] = JSON.parse(jsonDiff);
     expect(objectsInfo).toBeTruthy();
     expect(messages).toHaveProperty('diffMessages');
-    expect(messages).toHaveProperty('statistics');
   });
 });

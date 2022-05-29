@@ -10,9 +10,7 @@ export const createDiffs = (primaryData, secondaryData = primaryData) => {
   const secondaryKeys = Object.keys(secondaryData);
   const unitedKeys = _.uniq(primaryKeys.concat(secondaryKeys));
 
-  return unitedKeys
-    .slice()
-    .sort()
+  return _.sortBy(unitedKeys)
     .flatMap((key) => {
       const primaryValue = primaryData[key];
       const secondaryValue = secondaryData[key];
@@ -55,13 +53,13 @@ export const createDiffs = (primaryData, secondaryData = primaryData) => {
           key,
           keyPrefix: '-',
           value: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
-          action: 'updateFrom',
         },
         {
           key,
           keyPrefix: '+',
           value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
-          action: 'updateTo',
+          oldValue: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
+          action: 'update',
         },
       ];
     });
