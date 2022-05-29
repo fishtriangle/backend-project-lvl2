@@ -1,19 +1,18 @@
 import _ from 'lodash';
 
+const valueFormatter = (data) => {
+  if (_.isObject(data)) {
+    return '[complex value]';
+  }
+  if (typeof data === 'string') {
+    return `'${data}'`;
+  }
+  return (data === '' ? '\'\'' : data);
+};
+
 const plain = (diffArray) => {
   const iter = (currentDiff, path = '') => {
-    let updateFromValue;
-    const valueFormatter = (data) => {
-      let formattedValue = data === '' ? '\'\'' : data;
-
-      if (_.isObject(data)) {
-        formattedValue = '[complex value]';
-      } else if (typeof data === 'string') {
-        formattedValue = `'${data}'`;
-      }
-
-      return formattedValue;
-    };
+    const updateFromValue = [];
 
     if (!_.isArray(currentDiff)) {
       return '';
@@ -31,11 +30,11 @@ const plain = (diffArray) => {
         return `Property '${currentPath.join('.')}' was removed`;
       }
       if (action === 'updateFrom') {
-        updateFromValue = valueFormatter(value);
+        updateFromValue.push(valueFormatter(value));
       }
       if (action === 'updateTo') {
         return (
-          `Property '${currentPath.join('.')}' was updated. From ${updateFromValue} to ${currentValue}`
+          `Property '${currentPath.join('.')}' was updated. From ${updateFromValue.at(-1)} to ${currentValue}`
         );
       }
 

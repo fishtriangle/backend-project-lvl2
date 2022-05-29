@@ -8,8 +8,9 @@ import jsonFormatter from './formatters/json.js';
 export const createDiffs = (primaryData, secondaryData = primaryData) => {
   const primaryKeys = Object.keys(primaryData);
   const secondaryKeys = Object.keys(secondaryData);
+  const unitedKeys = _.uniq(primaryKeys.concat(secondaryKeys));
 
-  return _.uniq(primaryKeys.concat(secondaryKeys))
+  return unitedKeys
     .sort()
     .flatMap((key) => {
       const primaryValue = primaryData[key];

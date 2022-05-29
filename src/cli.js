@@ -8,10 +8,7 @@ export default function cli() {
     .arguments('<filepath1> <filepath2>')
     .option('-f, --format <type>', 'output format')
     .action((primaryFilepath, secondaryFilepath, options) => {
-      let logFormat = 'stylish';
-      if (options.format) {
-        logFormat = options.format;
-      }
+      const logFormat = options.format ? options.format : 'stylish';
       logDiffsFromPaths(primaryFilepath, secondaryFilepath, logFormat);
     });
 
