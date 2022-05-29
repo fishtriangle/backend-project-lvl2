@@ -34,7 +34,7 @@ const plain = (diffArray) => {
       }
       if (action === 'updateTo') {
         return (
-          `Property '${currentPath.join('.')}' was updated. From ${updateFromValue.at(-1)} to ${currentValue}`
+          `Property '${currentPath.join('.')}' was updated. From ${updateFromValue[updateFromValue.length - 1]} to ${currentValue}`
         );
       }
 

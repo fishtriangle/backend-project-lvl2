@@ -63,7 +63,7 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
         return {
           actionId: action,
           node: currentPath.join('.'),
-          oldArgument: updateFromValue.at(-1),
+          oldArgument: updateFromValue[updateFromValue.length - 1],
           newArgument: currentValue,
         };
       }
