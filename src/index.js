@@ -66,8 +66,10 @@ export const createDiffs = (primaryData, secondaryData = primaryData) => {
     });
 };
 
-const gendiff = (primaryData, secondaryData, logFormat = 'standard', primaryObject = null, secondaryObject = null) => {
-  const diffs = createDiffs(primaryData, secondaryData);
+const gendiff = (primaryPath, secondaryPath, logFormat = 'standard') => {
+  const primaryObject = makeObjectFromFile(primaryPath);
+  const secondaryObject = makeObjectFromFile(secondaryPath);
+  const diffs = createDiffs(getData(primaryObject), getData(secondaryObject));
   if (logFormat === 'stylish') {
     return stylish(diffs);
   }
@@ -81,15 +83,11 @@ const gendiff = (primaryData, secondaryData, logFormat = 'standard', primaryObje
 };
 
 export const logDiffsFromPaths = (primaryPath, secondaryPath, logFormat) => {
-  const primaryObject = makeObjectFromFile(primaryPath);
-  const secondaryObject = makeObjectFromFile(secondaryPath);
   console.log(
     gendiff(
-      getData(primaryObject),
-      getData(secondaryObject),
+      primaryPath,
+      secondaryPath,
       logFormat,
-      primaryObject,
-      secondaryObject,
     ),
   );
 };

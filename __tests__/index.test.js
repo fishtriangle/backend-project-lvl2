@@ -30,19 +30,19 @@ describe('create diffs from files', () => {
   });
 
   test('create diffs from objects in standard style', () => {
-    expect(gendiff(firstObject, secondObject)).toEqual(firstNSecondDiffsStandard);
+    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'))).toEqual(firstNSecondDiffsStandard);
   });
 
   test('create diffs from objects in stylish', () => {
-    expect(gendiff(firstObject, secondObject, 'stylish')).toEqual(firstNSecondDiffsStylish);
+    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'), 'stylish')).toEqual(firstNSecondDiffsStylish);
   });
 
   test('create diffs from objects in plain style', () => {
-    expect(gendiff(firstObject, secondObject, 'plain')).toEqual(firstNSecondDiffsPlain);
+    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'), 'plain')).toEqual(firstNSecondDiffsPlain);
   });
 
   test('create diffs from objects in json style', () => {
-    const jsonDiff = gendiff(firstObject, secondObject, 'json');
+    const jsonDiff = gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'), 'json');
     expect(typeof jsonDiff).toBe('string');
     const [objectsInfo, messages] = JSON.parse(jsonDiff);
     expect(objectsInfo).toBeTruthy();
