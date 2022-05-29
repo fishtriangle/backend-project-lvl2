@@ -25,10 +25,12 @@ const valueFormatter = (data) => {
 };
 
 const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
-  const updateFromValue = [];
-  const addCount = [];
-  const removeCount = [];
-  const updateCount = [];
+  const counters = {
+    addCount: 0,
+    removeCount: 0,
+    updateCount: 0,
+    updateFromValue: '',
+  };
   const objectsInfo = makeObjectsInfo(primaryObject, secondaryObject);
 
   const iter = (currentDiff, path = '') => {
@@ -41,7 +43,7 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
       const currentValue = valueFormatter(value);
 
       if (action === 'add') {
-        addCount.push(1);
+        counters.addCount += 1;
         return {
           actionId: action,
           node: currentPath.join('.'),
@@ -49,21 +51,21 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
         };
       }
       if (action === 'remove') {
-        removeCount.push(1);
+        counters.removeCount += 1;
         return {
           actionId: action,
           node: currentPath.join('.'),
         };
       }
       if (action === 'updateFrom') {
-        updateFromValue.push(valueFormatter(value));
+        counters.updateFromValue = valueFormatter(value);
       }
       if (action === 'updateTo') {
-        updateCount.push(1);
+        counters.updateCount += 1;
         return {
           actionId: action,
           node: currentPath.join('.'),
-          oldArgument: updateFromValue[updateFromValue.length - 1],
+          oldArgument: counters.updateFromValue,
           newArgument: currentValue,
         };
       }
@@ -82,9 +84,9 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
       {
         diffMessages,
         statistics: {
-          addCount: _.sum(addCount),
-          removeCount: _.sum(removeCount),
-          updateCount: _.sum(updateCount),
+          addCount: counters.addCount,
+          removeCount: counters.removeCount,
+          updateCount: counters.updateCount,
         },
       },
     ],

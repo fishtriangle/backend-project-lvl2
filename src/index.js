@@ -11,6 +11,7 @@ export const createDiffs = (primaryData, secondaryData = primaryData) => {
   const unitedKeys = _.uniq(primaryKeys.concat(secondaryKeys));
 
   return unitedKeys
+    .slice()
     .sort()
     .flatMap((key) => {
       const primaryValue = primaryData[key];

@@ -1,6 +1,6 @@
 import yaml from 'js-yaml';
-import { extname, resolve } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { extname, resolve } from 'path';
+import { readFileSync } from 'fs';
 
 export const parseJSON = (dataJSON) => (JSON.parse(dataJSON));
 export const parseYAML = (dataYAML) => (yaml.load(dataYAML));
