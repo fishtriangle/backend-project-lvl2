@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import makeObjectFromFile, { getData } from './parsers.js';
-import standardTree from './formatters/standardTree.js';
-import stylish from './formatters/stylishTree.js';
-import plain from './formatters/plain.js';
-import jsonFormatter from './formatters/json.js';
+import toStandardFormat from './formatters/standard.js';
+import toStylishFormat from './formatters/stylish.js';
+import toPlainFormat from './formatters/plain.js';
+import toJsonFormat from './formatters/json.js';
 
 export const createDiffs = (primaryData, secondaryData = primaryData) => {
   const primaryKeys = Object.keys(primaryData);
@@ -58,7 +58,7 @@ export const createDiffs = (primaryData, secondaryData = primaryData) => {
           key,
           keyPrefix: '+',
           value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
-          oldValue: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
+          valueBefore: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
           action: 'update',
         },
       ];
@@ -71,13 +71,13 @@ const gendiff = (primaryPath, secondaryPath, logFormat = 'stylish') => {
   const diffs = createDiffs(getData(primaryObject), getData(secondaryObject));
   switch (logFormat) {
     case 'standard':
-      return standardTree(diffs);
+      return toStandardFormat(diffs);
     case 'plain':
-      return plain(diffs);
+      return toPlainFormat(diffs);
     case 'json':
-      return jsonFormatter(diffs, primaryObject, secondaryObject);
+      return toJsonFormat(diffs, primaryObject, secondaryObject);
     default:
-      return stylish(diffs);
+      return toStylishFormat(diffs);
   }
 };
 

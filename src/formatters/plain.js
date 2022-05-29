@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const valueFormatter = (data) => {
+const formatValue = (data) => {
   if (_.isObject(data)) {
     return '[complex value]';
   }
@@ -10,7 +10,7 @@ const valueFormatter = (data) => {
   return (data === '' ? '\'\'' : data);
 };
 
-const plain = (diffArray) => {
+const toPlainFormat = (diffArray) => {
   const iter = (currentDiff, path = '') => {
     if (!_.isArray(currentDiff)) {
       return '';
@@ -20,11 +20,11 @@ const plain = (diffArray) => {
       key,
       value,
       action,
-      oldValue,
+      valueBefore,
     }) => {
       const currentPath = [...path, key];
 
-      const currentValue = valueFormatter(value);
+      const currentValue = formatValue(value);
 
       if (action === 'add') {
         return `Property '${currentPath.join('.')}' was added with value: ${currentValue}`;
@@ -34,7 +34,7 @@ const plain = (diffArray) => {
       }
       if (action === 'update') {
         return (
-          `Property '${currentPath.join('.')}' was updated. From ${valueFormatter(oldValue)} to ${currentValue}`
+          `Property '${currentPath.join('.')}' was updated. From ${formatValue(valueBefore)} to ${currentValue}`
         );
       }
 
@@ -47,4 +47,4 @@ const plain = (diffArray) => {
   return iter(diffArray);
 };
 
-export default plain;
+export default toPlainFormat;

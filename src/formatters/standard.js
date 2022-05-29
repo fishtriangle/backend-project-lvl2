@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const standardTree = (diffArray) => {
+const toStandardFormat = (diffArray) => {
   const iter = (currentDiff, depth) => {
     if (!_.isArray(currentDiff)) {
       return `${currentDiff}\n`;
@@ -19,4 +19,4 @@ const standardTree = (diffArray) => {
   return iter(diffArray, 0).substring(1);
 };
 
-export default standardTree;
+export default toStandardFormat;

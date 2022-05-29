@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const stylishTree = (diffArray) => {
+const stylish = (diffArray) => {
   const iter = (currentDiff, depth) => {
     if (!_.isArray(currentDiff)) {
       return `${currentDiff}`;
@@ -22,4 +22,4 @@ const stylishTree = (diffArray) => {
   return iter(diffArray, 0);
 };
 
-export default stylishTree;
+export default stylish;

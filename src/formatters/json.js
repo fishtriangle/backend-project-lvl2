@@ -17,14 +17,14 @@ const makeObjectsInfo = (primaryObject, secondaryObject) => (
       },
     });
 
-const valueFormatter = (data) => {
+const formatValue = (data) => {
   if (_.isObject(data)) {
     return '[complex value]';
   }
   return (data === '' ? '\'\'' : data);
 };
 
-const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
+const toJsonFormat = (diffArray, primaryObject, secondaryObject) => {
   const objectsInfo = makeObjectsInfo(primaryObject, secondaryObject);
 
   const iter = (currentDiff, path = '') => {
@@ -36,10 +36,10 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
       key,
       value,
       action,
-      oldValue,
+      valueBefore,
     }) => {
       const currentPath = [...path, key];
-      const currentValue = valueFormatter(value);
+      const currentValue = formatValue(value);
 
       if (action === 'add') {
         return {
@@ -58,7 +58,7 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
         return {
           actionId: action,
           node: currentPath.join('.'),
-          oldArgument: oldValue,
+          oldArgument: valueBefore,
           newArgument: currentValue,
         };
       }
@@ -81,4 +81,4 @@ const jsonFormatter = (diffArray, primaryObject, secondaryObject) => {
   );
 };
 
-export default jsonFormatter;
+export default toJsonFormat;
