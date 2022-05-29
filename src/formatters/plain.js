@@ -1,9 +1,20 @@
 import _ from 'lodash';
 
 const plain = (diffArray) => {
-  let previousValue;
-  let previousDepth = 0;
-  const iter = (currentDiff, path = '', depth = 0) => {
+  const iter = (currentDiff, path = '') => {
+    let updateFromValue;
+    const valueFormatter = (data) => {
+      let formattedValue = data === '' ? '\'\'' : data;
+
+      if (_.isObject(data)) {
+        formattedValue = '[complex value]';
+      } else if (typeof data === 'string') {
+        formattedValue = `'${data}'`;
+      }
+
+      return formattedValue;
+    };
+
     if (!_.isArray(currentDiff)) {
       return '';
     }
@@ -11,12 +22,7 @@ const plain = (diffArray) => {
     const lines = currentDiff.flatMap(({ key, value, action }) => {
       const currentPath = [...path, key];
 
-      let currentValue = value === '' ? '\'\'' : value;
-      if (_.isObject(value)) {
-        currentValue = '[complex value]';
-      } else if (typeof value === 'string') {
-        currentValue = `'${value}'`;
-      }
+      const currentValue = valueFormatter(value);
 
       if (action === 'add') {
         return `Property '${currentPath.join('.')}' was added with value: ${currentValue}`;
@@ -24,15 +30,16 @@ const plain = (diffArray) => {
       if (action === 'remove') {
         return `Property '${currentPath.join('.')}' was removed`;
       }
-      if (action === 'update') {
+      if (action === 'updateFrom') {
+        updateFromValue = valueFormatter(value);
+      }
+      if (action === 'updateTo') {
         return (
-          `Property '${currentPath.join('.')}' was updated. From ${previousDepth > depth ? '[complex value]' : previousValue} to ${currentValue}`
+          `Property '${currentPath.join('.')}' was updated. From ${updateFromValue} to ${currentValue}`
         );
       }
 
-      previousValue = currentValue;
-      previousDepth = depth;
-      return iter(value, currentPath, depth + 1);
+      return iter(value, currentPath);
     });
 
     return _.compact(lines).join('\n');

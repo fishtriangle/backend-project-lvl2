@@ -21,3 +21,6 @@
 
 ### Example of run with plain output:
 [![asciicast](https://asciinema.org/a/YUU11kHMogwMKY6oNKEhKRi0m.svg)](https://asciinema.org/a/YUU11kHMogwMKY6oNKEhKRi0m)
+
+### Example of run with JSON output:
+[![asciicast](https://asciinema.org/a/h6HnM9AeBKbXElgfk3KY66UZk.svg)](https://asciinema.org/a/h6HnM9AeBKbXElgfk3KY66UZk)
