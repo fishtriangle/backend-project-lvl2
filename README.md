@@ -31,7 +31,7 @@
 Second studying project created with node.js and makefile. 
 Find difference between two objects.
 In cli-mode supports: .json and .yml/.yaml files. 
-Supports different output styles: standard, stylish, plain, json. 
+Supports different output styles: standard, standardTree, plain, json. 
 
 ## Requirements
 <ul>
@@ -90,10 +90,10 @@ And example of diffLog(string):
 ```
 
 
-There are several output styles: standard, stylish, plain, json.
+There are several output styles: standard, standardTree, plain, json.
 Use non-default output style:
 ```
-gendiff(objectBeforeUpdate, updatedObject, 'stylish');
+gendiff(objectBeforeUpdate, updatedObject, 'standardTree');
 ```
 
 

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import makeObjectFromFile, { getData } from './parsers.js';
 import standardTree from './formatters/standardTree.js';
-import stylish from './formatters/stylish.js';
+import stylish from './formatters/stylishTree.js';
 import plain from './formatters/plain.js';
 import jsonFormatter from './formatters/json.js';
 

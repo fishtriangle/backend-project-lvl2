@@ -1,4 +1,4 @@
-export const firstNSecondDiffsStandard = '{\n'
+export const firstNSecondDiffsStylish = '{\n'
   + '    common: {\n'
   + '      + follow: false\n'
   + '        setting1: Value 1\n'
@@ -43,7 +43,7 @@ export const firstNSecondDiffsStandard = '{\n'
   + '    }\n'
   + '}';
 
-export const firstNSecondDiffsStylish = '  common: \n'
+export const firstNSecondDiffsStandard = '  common: \n'
   + '  + follow: false\n'
   + '    setting1: Value 1\n'
   + '  - setting2: 200\n'
