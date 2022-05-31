@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { getData, getFormat, getPath } from '../parsers.js';
+import { getDescription, getFormat, getPath } from '../makeObject.js';
 
 const makeObjectsInfo = (primaryObject, secondaryObject) => (
   (!primaryObject && !secondaryObject)
@@ -8,12 +8,12 @@ const makeObjectsInfo = (primaryObject, secondaryObject) => (
       primaryObject: {
         fullPath: getPath(primaryObject),
         dataFormat: getFormat(primaryObject),
-        data: getData(primaryObject),
+        data: getDescription(primaryObject),
       },
       secondaryObject: {
         fullPath: getPath(secondaryObject),
         dataFormat: getFormat(secondaryObject),
-        data: getData(secondaryObject),
+        data: getDescription(secondaryObject),
       },
     });
 

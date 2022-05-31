@@ -2,9 +2,9 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { test, expect, describe } from '@jest/globals';
 import gendiff from '../src/index.js';
-import makeObjectFromFile from '../src/parsers.js';
+import makeObject from '../src/makeObject.js';
 import { firstObject, secondObject, thirdObject } from '../__fixtures__/objectsExamples.js';
-import { firstNSecondDiffsStandard, firstNSecondDiffsStylish, firstNSecondDiffsPlain } from '../__fixtures__/diffLogsExamples.js';
+import { firstNSecondDiffsStylish, firstNSecondDiffsPlain } from '../__fixtures__/diffLogsExamples.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,25 +12,21 @@ const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', 
 
 describe('create diffs from files', () => {
   test('get object from JSON', () => {
-    const testingFirstObject = makeObjectFromFile(getFixturePath('firstObject.json'));
-    const testingSecondObject = makeObjectFromFile(getFixturePath('secondObject.json'));
-    const testingThirdObject = makeObjectFromFile(getFixturePath('thirdObject.json'));
-    expect(testingFirstObject.data).toEqual(firstObject);
-    expect(testingSecondObject.data).toEqual(secondObject);
-    expect(testingThirdObject.data).toEqual(thirdObject);
+    const testingFirstObject = makeObject(getFixturePath('firstObject.json'));
+    const testingSecondObject = makeObject(getFixturePath('secondObject.json'));
+    const testingThirdObject = makeObject(getFixturePath('thirdObject.json'));
+    expect(testingFirstObject.description).toEqual(firstObject);
+    expect(testingSecondObject.description).toEqual(secondObject);
+    expect(testingThirdObject.description).toEqual(thirdObject);
   });
 
   test('get object from YAML', () => {
-    const testingFirstObject = makeObjectFromFile(getFixturePath('firstObject.yml'));
-    const testingSecondObject = makeObjectFromFile(getFixturePath('secondObject.yml'));
-    const testingThirdObject = makeObjectFromFile(getFixturePath('thirdObject.yml'));
-    expect(testingFirstObject.data).toEqual(firstObject);
-    expect(testingSecondObject.data).toEqual(secondObject);
-    expect(testingThirdObject.data).toEqual(thirdObject);
-  });
-
-  test('create diffs from objects in standard style', () => {
-    expect(gendiff(getFixturePath('firstObject.yml'), getFixturePath('secondObject.yml'), 'standard')).toEqual(firstNSecondDiffsStandard);
+    const testingFirstObject = makeObject(getFixturePath('firstObject.yml'));
+    const testingSecondObject = makeObject(getFixturePath('secondObject.yml'));
+    const testingThirdObject = makeObject(getFixturePath('thirdObject.yml'));
+    expect(testingFirstObject.description).toEqual(firstObject);
+    expect(testingSecondObject.description).toEqual(secondObject);
+    expect(testingThirdObject.description).toEqual(thirdObject);
   });
 
   test('create diffs from objects in stylish', () => {
