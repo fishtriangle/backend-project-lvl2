@@ -10,7 +10,27 @@ const stylish = (diffArray) => {
     const indent = '    ';
     const currentIndent = `${baseIndent}${indent.repeat(depth)}`;
     const bracketIndent = `${indent.repeat(depth)}`;
-    const lines = currentDiff.map(({ key, keyPrefix, value }) => (`${currentIndent}${keyPrefix} ${key}: ${iter(value, depth + 1)}`));
+
+    const lines = currentDiff.flatMap(({
+      key,
+      type,
+      value,
+      valueBefore,
+    }) => {
+      switch (type) {
+        case 'added':
+          return `${currentIndent}+ ${key}: ${iter(value, depth + 1)}`;
+        case 'removed':
+          return `${currentIndent}- ${key}: ${iter(value, depth + 1)}`;
+        case 'updated':
+          return [
+            `${currentIndent}- ${key}: ${iter(valueBefore, depth + 1)}`,
+            `${currentIndent}+ ${key}: ${iter(value, depth + 1)}`,
+          ];
+        default:
+          return `${currentIndent}  ${key}: ${iter(value, depth + 1)}`;
+      }
+    });
 
     return [
       '{',

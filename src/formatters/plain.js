@@ -19,26 +19,25 @@ const toPlainFormat = (diffArray) => {
     const lines = currentDiff.flatMap(({
       key,
       value,
-      action,
+      type,
       valueBefore,
     }) => {
       const currentPath = [...path, key];
 
       const currentValue = formatValue(value);
 
-      if (action === 'add') {
-        return `Property '${currentPath.join('.')}' was added with value: ${currentValue}`;
+      switch (type) {
+        case 'added':
+          return `Property '${currentPath.join('.')}' was added with value: ${currentValue}`;
+        case 'removed':
+          return `Property '${currentPath.join('.')}' was removed`;
+        case 'updated':
+          return (
+            `Property '${currentPath.join('.')}' was updated. From ${formatValue(valueBefore)} to ${currentValue}`
+          );
+        default:
+          return iter(value, currentPath);
       }
-      if (action === 'remove') {
-        return `Property '${currentPath.join('.')}' was removed`;
-      }
-      if (action === 'update') {
-        return (
-          `Property '${currentPath.join('.')}' was updated. From ${formatValue(valueBefore)} to ${currentValue}`
-        );
-      }
-
-      return iter(value, currentPath);
     });
 
     return _.compact(lines).join('\n');

@@ -1,21 +1,4 @@
 import _ from 'lodash';
-import { getDescription, getFormat, getPath } from '../makeObject.js';
-
-const makeObjectsInfo = (primaryObject, secondaryObject) => (
-  (!primaryObject && !secondaryObject)
-    ? 'Diff created not from files!'
-    : {
-      primaryObject: {
-        fullPath: getPath(primaryObject),
-        dataFormat: getFormat(primaryObject),
-        data: getDescription(primaryObject),
-      },
-      secondaryObject: {
-        fullPath: getPath(secondaryObject),
-        dataFormat: getFormat(secondaryObject),
-        data: getDescription(secondaryObject),
-      },
-    });
 
 const formatValue = (data) => {
   if (_.isObject(data)) {
@@ -24,9 +7,7 @@ const formatValue = (data) => {
   return (data === '' ? '\'\'' : data);
 };
 
-const toJsonFormat = (diffArray, primaryObject, secondaryObject) => {
-  const objectsInfo = makeObjectsInfo(primaryObject, secondaryObject);
-
+const toJsonFormat = (diffArray) => {
   const iter = (currentDiff, path = '') => {
     if (!_.isArray(currentDiff)) {
       return '';
@@ -35,35 +16,34 @@ const toJsonFormat = (diffArray, primaryObject, secondaryObject) => {
     const messages = currentDiff.flatMap(({
       key,
       value,
-      action,
+      type,
       valueBefore,
     }) => {
       const currentPath = [...path, key];
       const currentValue = formatValue(value);
 
-      if (action === 'add') {
-        return {
-          actionId: action,
-          node: currentPath.join('.'),
-          addArgument: currentValue,
-        };
+      switch (type) {
+        case 'added':
+          return {
+            actionType: type,
+            node: currentPath.join('.'),
+            addArgument: currentValue,
+          };
+        case 'removed':
+          return {
+            actionType: type,
+            node: currentPath.join('.'),
+          };
+        case 'updated':
+          return {
+            actionType: type,
+            node: currentPath.join('.'),
+            oldArgument: valueBefore,
+            newArgument: currentValue,
+          };
+        default:
+          return iter(value, currentPath);
       }
-      if (action === 'remove') {
-        return {
-          actionId: action,
-          node: currentPath.join('.'),
-        };
-      }
-      if (action === 'update') {
-        return {
-          actionId: action,
-          node: currentPath.join('.'),
-          oldArgument: valueBefore,
-          newArgument: currentValue,
-        };
-      }
-
-      return iter(value, currentPath);
     });
 
     return _.compact(messages);
@@ -71,14 +51,7 @@ const toJsonFormat = (diffArray, primaryObject, secondaryObject) => {
 
   const diffMessages = iter(diffArray);
 
-  return JSON.stringify(
-    [
-      objectsInfo,
-      {
-        diffMessages,
-      },
-    ],
-  );
+  return JSON.stringify(diffMessages);
 };
 
 export default toJsonFormat;

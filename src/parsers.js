@@ -1,14 +1,11 @@
 import yaml from 'js-yaml';
 
 const parsers = {
-  json: (dataJSON) => (JSON.parse(dataJSON)),
-  yml: (dataYAML) => (yaml.load(dataYAML)),
-  yaml: (dataYAML) => (yaml.load(dataYAML)),
+  json: JSON.parse,
+  yml: yaml.load,
+  yaml: yaml.load,
 };
 
-const parseData = (data, dataType) => {
-  const object = parsers[dataType] ? parsers[dataType](data) : parsers.json(data);
-  return object;
-};
+const parseData = (data, dataType) => parsers[dataType](data);
 
 export default parseData;

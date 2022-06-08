@@ -12,7 +12,7 @@ const createDiffs = (primaryData, secondaryData = primaryData) => {
       if (_.isObject(primaryValue) && _.isObject(secondaryValue)) {
         return {
           key,
-          keyPrefix: ' ',
+          type: 'nested',
           value: createDiffs(primaryValue, secondaryValue),
         };
       }
@@ -20,7 +20,7 @@ const createDiffs = (primaryData, secondaryData = primaryData) => {
       if (_.isEqual(primaryValue, secondaryValue)) {
         return {
           key,
-          keyPrefix: ' ',
+          type: 'unchanged',
           value: primaryValue,
         };
       }
@@ -28,35 +28,27 @@ const createDiffs = (primaryData, secondaryData = primaryData) => {
       if (!(_.has(secondaryData, key))) {
         return {
           key,
-          keyPrefix: '-',
+          type: 'removed',
           value: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
-          action: 'remove',
         };
       }
 
       if (!(_.has(primaryData, key))) {
         return {
           key,
-          keyPrefix: '+',
+          type: 'added',
           value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
-          action: 'add',
         };
       }
 
-      return [
+      return (
         {
           key,
-          keyPrefix: '-',
-          value: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
-        },
-        {
-          key,
-          keyPrefix: '+',
+          type: 'updated',
           value: _.isObject(secondaryValue) ? createDiffs(secondaryValue) : secondaryValue,
           valueBefore: _.isObject(primaryValue) ? createDiffs(primaryValue) : primaryValue,
-          action: 'update',
-        },
-      ];
+        }
+      );
     });
 };
 
